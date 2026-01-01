@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div class="navbar">
+    <div>🏨 Hotel Management</div>
+    <div>
+        <a th:href="@{/reservations}">Reservations</a>
+        <a th:href="@{/logout}">Logout</a>
+    </div>
+</div>
+
+<div class="container">
+    <h1>Welcome, Receptionist 👋</h1>
+    <p>Manage hotel reservations easily from here.</p>
+
+    <a th:href="@{/reservations}" class="btn btn-primary">
+        Manage Reservations
+    </a>
+</div>
+
+</body>
+</html>

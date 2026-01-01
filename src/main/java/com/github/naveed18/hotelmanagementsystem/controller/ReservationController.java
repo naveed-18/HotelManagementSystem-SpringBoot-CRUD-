@@ -1,59 +1,70 @@
 package com.github.naveed18.hotelmanagementsystem.controller;
 
-import java.util.List;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.github.naveed18.hotelmanagementsystem.entity.ReservationEntity;
 import com.github.naveed18.hotelmanagementsystem.service.ReservationServices;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
-
-
-
-@RestController
+@Controller
 @RequestMapping("/reservations")
 public class ReservationController {
-    
-    private ReservationServices reservationServices;
+
+    private final ReservationServices reservationServices;
 
     public ReservationController(ReservationServices reservationServices) {
         this.reservationServices = reservationServices;
     }
 
-    @PostMapping("/reserve-room")
-    public ResponseEntity<ReservationEntity> reserveRoom (@RequestBody ReservationEntity reservationEntity) {
-        ReservationEntity savedReservationEntity = reservationServices.reserveRoom(reservationEntity);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedReservationEntity);
+    // VIEW ALL RESERVATIONS
+    @GetMapping
+    public String viewReservations(Model model) {
+        model.addAttribute("reservations",
+                reservationServices.viewReservations());
+        return "reservations";
     }
 
-    @GetMapping("/view-reservations")
-    public ResponseEntity<List<ReservationEntity>> viewAllReservations() {
-        List<ReservationEntity> reservations = reservationServices.viewReservations();
-        return ResponseEntity.ok(reservations);
-    }
-    
-    @PutMapping("update-reservation/{reservationId}")
-    public ResponseEntity<ReservationEntity> updateReservation (@PathVariable Long reservationId, @RequestBody ReservationEntity reservationEntity) {
-        return ResponseEntity.ok(reservationServices.updateReservation(reservationId, reservationEntity));
+    // SHOW ADD FORM
+    @GetMapping("/add")
+    public String showAddForm(Model model) {
+        model.addAttribute("reservation", new ReservationEntity());
+        return "add-reservation";
     }
 
-    @DeleteMapping("delete-reservation/{reservationId}")
-    public ResponseEntity<ReservationEntity> deleteReservation (@PathVariable Long reservationId) {
-        ReservationEntity exist = reservationServices.getReservationById(reservationId);
-        if (exist == null) {
-            return ResponseEntity.notFound().build();
-        }
-        reservationServices.deleteReservation(reservationId);
-        return ResponseEntity.noContent().build();
+    // SAVE RESERVATION
+    @PostMapping("/save")
+    public String saveReservation( @ModelAttribute("reservation") ReservationEntity reservation) {
+
+        reservationServices.reserveRoom(reservation);
+        return "redirect:/reservations";
+    }
+
+    // SHOW EDIT FORM
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable Long id, Model model) {
+
+        ReservationEntity reservation =
+                reservationServices.getReservationById(id);
+
+        model.addAttribute("reservation", reservation);
+        return "edit-reservation";
+    }
+
+    // UPDATE RESERVATION
+    @PostMapping("/update/{id}")
+    public String updateReservation(
+            @PathVariable Long id,
+            @ModelAttribute("reservation") ReservationEntity reservation) {
+
+        reservationServices.updateReservation(id, reservation);
+        return "redirect:/reservations";
+    }
+
+    // DELETE RESERVATION
+    @GetMapping("/delete/{id}")
+    public String deleteReservation(@PathVariable Long id) {
+        reservationServices.deleteReservation(id);
+        return "redirect:/reservations";
     }
 }

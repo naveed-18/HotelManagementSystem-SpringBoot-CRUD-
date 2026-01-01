@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Reservations</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div class="navbar">
+    <div>🏨 Hotel Management</div>
+    <div>
+        <a th:href="@{/dashboard}">Dashboard</a>
+        <a th:href="@{/logout}">Logout</a>
+    </div>
+</div>
+
+<div class="container">
+    <h2>Reservations</h2>
+
+    <a th:href="@{/reservations/add}" class="btn btn-primary">
+        + Add Reservation
+    </a>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Guest</th>
+                <th>Room</th>
+                <th>Phone</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="r : ${reservations}">
+                <td th:text="${r.reservationId}"></td>
+                <td th:text="${r.guestName}"></td>
+                <td th:text="${r.roomNumber}"></td>
+                <td th:text="${r.phoneNumber}"></td>
+                <td>
+                    <a th:href="@{/reservations/edit/{id}(id=${r.reservationId})}"
+                       class="btn btn-secondary">Edit</a>
+
+                    <a th:href="@{/reservations/delete/{id}(id=${r.reservationId})}"
+                       class="btn btn-danger"
+                       onclick="return confirm('Delete this reservation?')">Delete</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

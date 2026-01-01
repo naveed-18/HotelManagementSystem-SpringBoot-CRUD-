@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Receptionist Login</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div class="container" style="max-width:400px;">
+    <h2>Hotel Management Login</h2>
+
+    <form th:action="@{/login}" method="post">
+        <div class="form-group">
+            <input type="email" name="username" placeholder="Email" required>
+        </div>
+
+        <div class="form-group">
+            <input type="password" name="password" placeholder="Password" required>
+        </div>
+
+        <button class="btn btn-primary" type="submit">Login</button>
+
+        <p th:if="${param.error}" style="color:red;">Invalid credentials</p>
+        <p th:if="${param.logout}" style="color:green;">Logged out successfully</p>
+    </form>
+</div>
+
+</body>
+</html>
